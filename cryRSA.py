@@ -23,9 +23,11 @@ def generate_RSA(bits=2048, passphrase=""):
     rdm = Random.new().read
     key = RSA.generate(bits, randfunc=rdm, e=65537, progress_func=None)
 
-    print key.can_encrypt()
-    print key.can_sign()
-    print key.has_private()
+    print ""
+    print "Key can encrypt: " + str(key.can_encrypt())
+    print "key can sygn: " + str(key.can_sign())
+    print "key has private: " + str(key.has_private())
+    print ""
 
     public_key = key.publickey().exportKey(format="PEM", passphrase=passphrase, pkcs=1)
     private_key = key.exportKey(format="PEM", passphrase=passphrase, pkcs=1)
@@ -185,12 +187,22 @@ def _rungen(args):
         passphrase = args.passphrase
 
     privateKey, publicKey = generate_RSA(args.generate, passphrase)
-    f = open('public_key.pem','w')
-    f.write(publicKey)
-    f.close()
-    f = open('private_key.pem','w')
-    f.write(privateKey)
-    f.close()
+    try:
+        f = open('public_key.pem','w')
+        f.write(publicKey)
+        f.close()
+        print 'Public key created: public_key.pem'
+    except IOError:
+        print 'ERROR: can\'t create key.'
+        sys.exit(1)
+    try:
+        f = open('private_key.pem','w')
+        f.write(privateKey)
+        f.close()
+        print 'Private key created: private_key.pem'
+    except IOError:
+        print 'ERROR: can\'t create key.'
+        sys.exit(1)
     exit()
 
 if __name__ == '__main__':
