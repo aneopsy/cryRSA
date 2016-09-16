@@ -1,4 +1,4 @@
-# Crysher - Encryption & Decryption tool
+# CryRSA -  RSA Encryption & Decryption tool
 
 CryRSA est un outil en Python de chiffrage et de déchiffrage qui utilise le chiffrement RSA, compatible avec openssl.
 
@@ -62,31 +62,6 @@ Differentes option sont disponibles:
 * -g BITS                   defini le nombre de bits de la key (1024, 4096)
 * -v                        mode verbose
 * -h                        affiche l'aide
-
-## Running the tests
-
-Lance une serie de cycle qui genere un password aleatoire entre 8-32 characteres et un text aleatoire entre 20-256 characteres.
-Le test consiste a chiffré et déchiffré des données aleatoires, et de comparer les résultats pour etre sure que tout fonctionne correctement.
-
-Le résultat du test ressemble à cela:
-```
-(2000 / 2000) 100.00%  15 139 2000    0 md5
-$ ^      ^     ^        ^  ^   ^      ^ ^- hashage
-$ |      |     |        |  |   |      +--- nbr failed
-$ |      |     |        |  |   +---------- nbr passed
-$ |      |     |        |  +-------------- taille du fichier pour le test
-$ |      |     |        +----------------- taille du password pour le test
-$ |      |     +-------------------------- poucentage completé
-$ |      +-------------------------------- total
-$ +--------------------------------------- id du test
-
-```
-
-Exemple de test:
-
-```
-python crysher.py -t 2000
-```
 
 ## Deployment
 
