@@ -45,8 +45,10 @@ def _cli_opts():
     mebase = '%s' % (os.path.basename(mepath))
     description = '''Implements encryption/decryption RSA.'''
     desc = argparse.RawDescriptionHelpFormatter
-    parser = argparse.ArgumentParser(prog=mebase, description=description,
-                                     formatter_class=desc)
+    parser = argparse.ArgumentParser(prog=mebase,
+                                     description=description,
+                                     formatter_class=desc,
+                                     )
 
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-d', '--decrypt',
