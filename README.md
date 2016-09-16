@@ -1,6 +1,6 @@
 # Crysher - Encryption & Decryption tool
 
-Crysher est un outil en Python de chiffrage et de déchiffrage qui utilise le chiffrement AES-256, compatible avec openssl aes-256-cbc.
+CryRSA est un outil en Python de chiffrage et de déchiffrage qui utilise le chiffrement RSA, compatible avec openssl.
 
 ### Prerequisities
 
@@ -14,7 +14,7 @@ pip install Crypto
 ## Getting Started
 
 ```
-$ python crysher.py
+$ python cryRSA.py
 
 usage: crysher.py [-h] [-d] [-e] [-i INPUT] [-m MSGDGST] [-o OUTPUT]
                   [-p PASSPHRASE] [-t TEST] [-v] [-V]

@@ -40,8 +40,7 @@ def _cli_opts():
     mebase = '%s' % (os.path.basename(mepath))
 
     description = '''
-        Implements encryption/decryption that is compatible with openssl
-        AES-256 CBC mode.
+        Implements encryption/decryption RSA.
         '''
 
     parser = argparse.ArgumentParser(prog=mebase,
@@ -61,11 +60,7 @@ def _cli_opts():
                         help='input file, default is stdin')
     parser.add_argument('-k', '--key',
                         action='store',
-                        help='input file, default is stdin')
-    parser.add_argument('-m', '--msgdgst',
-                        action='store',
-                        default='md5',
-                        help='message digest (md5, sha, sha1, sha256, sha512), default is md5')
+                        help='input file')
     parser.add_argument('-o', '--output',
                         action='store',
                         help='output file, default is stdout')
@@ -82,6 +77,11 @@ def _cli_opts():
                         version='%(prog)s v' + VERSION + " by " + AUTHOR )
 
     args = parser.parse_args()
+
+    if args.encrypt or args.decrypt:
+        if args.key is None:
+            parser.error('--encrypt and --decrypt require --key')
+
     return args
 
 # ================================================================
@@ -94,6 +94,7 @@ def _open_ios(args):
 
     ifp = sys.stdin
     ofp = sys.stdout
+    kfp = None
 
     if args.input is not None:
         try:
@@ -115,7 +116,6 @@ def _open_ios(args):
         except IOError:
             print 'ERROR: can\'t read file: %s' % (args.key)
             sys.exit(1)
-
     return ifp, ofp, kfp
 
 
@@ -140,27 +140,20 @@ def _rundec(args):
 
     import ast
 
+    ifp, ofp, kfp = _open_ios(args)
     if args.passphrase is None:
         passphrase = getpass('Passphrase: ')
     else:
         passphrase = args.passphrase
 
-    ifp, ofp, kfp = _open_ios(args)
     key = RSA.importKey(kfp.read(), passphrase=passphrase)
     decrypted = key.decrypt(ast.literal_eval(str(ifp.read())))
+    ofp.write(decrypted)
     _close_ios(ifp, ofp, kfp)
-    print decrypted
-
-    h = SHA.new()
-    h.update(decrypted)
-    verifier = PKCS1_PSS.new(key)
-    if verifier.verify(h, signature):
-        print "The signature is authentic."
-    else:
-        print "The signature is not authentic."
 
 def _runenc(args):
 
+    ifp, ofp, kfp = _open_ios(args)
     if args.passphrase is None:
         while True:
             passphrase = getpass('Passphrase: ')
@@ -172,18 +165,11 @@ def _runenc(args):
     else:
         passphrase = args.passphrase
 
-    ifp, ofp, kfp = _open_ios(args)
     key = RSA.importKey(kfp.read(), passphrase=passphrase)
     message = ifp.read()
     out = key.encrypt(message, 32)
     ofp.write(str(out))
     _close_ios(ifp, ofp, kfp)
-
-    h = SHA.new()
-    h.update(message)
-    signer = PKCS1_PSS.new(key)
-    signature = PKCS1_PSS.sign(key)
-    print signature
 
 def _rungen(args):
 
