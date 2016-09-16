@@ -14,6 +14,7 @@ from base64 import b64decode
 VERSION = '1.0'
 AUTHOR = "AneoPsy"
 
+
 def generate_RSA(bits=2048, passphrase=""):
     '''
     Generate an RSA keypair with an exponent of 65537 in PEM format
@@ -29,9 +30,11 @@ def generate_RSA(bits=2048, passphrase=""):
     print "key has private: " + str(key.has_private())
     print ""
 
-    public_key = key.publickey().exportKey(format="PEM", passphrase=passphrase, pkcs=1)
+    public_key = key.publickey().exportKey(format="PEM", passphrase=passphrase,
+                                           pkcs=1)
     private_key = key.exportKey(format="PEM", passphrase=passphrase, pkcs=1)
     return private_key, public_key
+
 
 def _cli_opts():
     '''
@@ -40,15 +43,10 @@ def _cli_opts():
     '''
     mepath = unicode(os.path.abspath(sys.argv[0]))
     mebase = '%s' % (os.path.basename(mepath))
-
-    description = '''
-        Implements encryption/decryption RSA.
-        '''
-
-    parser = argparse.ArgumentParser(prog=mebase,
-                                     formatter_class=argparse.RawDescriptionHelpFormatter,
-                                     description=description,
-                                     )
+    description = '''Implements encryption/decryption RSA.'''
+    desc = argparse.RawDescriptionHelpFormatter
+    parser = argparse.ArgumentParser(prog=mebase, description=description,
+                                     formatter_class=desc)
 
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-d', '--decrypt',
@@ -76,7 +74,7 @@ def _cli_opts():
                        help='generate Public & Private keys')
     parser.add_argument('-V', '--version',
                         action='version',
-                        version='%(prog)s v' + VERSION + " by " + AUTHOR )
+                        version='%(prog)s v' + VERSION + " by " + AUTHOR)
 
     args = parser.parse_args()
 
@@ -86,9 +84,7 @@ def _cli_opts():
 
     return args
 
-# ================================================================
-# _open_ios
-# ================================================================
+
 def _open_ios(args):
     '''
     Open the IO files.
@@ -121,9 +117,6 @@ def _open_ios(args):
     return ifp, ofp, kfp
 
 
-# ================================================================
-# _close_ios
-# ================================================================
 def _close_ios(ifp, ofp, kfp):
     '''
     Close the IO files if necessary.
@@ -137,6 +130,7 @@ def _close_ios(ifp, ofp, kfp):
 
     if kfp != sys.stdin:
         kfp.close()
+
 
 def _rundec(args):
 
@@ -152,6 +146,7 @@ def _rundec(args):
     decrypted = key.decrypt(ast.literal_eval(str(ifp.read())))
     ofp.write(decrypted)
     _close_ios(ifp, ofp, kfp)
+
 
 def _runenc(args):
 
@@ -173,6 +168,7 @@ def _runenc(args):
     ofp.write(str(out))
     _close_ios(ifp, ofp, kfp)
 
+
 def _rungen(args):
 
     if args.passphrase is None:
@@ -188,7 +184,7 @@ def _rungen(args):
 
     privateKey, publicKey = generate_RSA(args.generate, passphrase)
     try:
-        f = open('public_key.pem','w')
+        f = open('public_key.pem', 'w')
         f.write(publicKey)
         f.close()
         print 'Public key created: public_key.pem'
@@ -196,7 +192,7 @@ def _rungen(args):
         print 'ERROR: can\'t create key.'
         sys.exit(1)
     try:
-        f = open('private_key.pem','w')
+        f = open('private_key.pem', 'w')
         f.write(privateKey)
         f.close()
         print 'Private key created: private_key.pem'
