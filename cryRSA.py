@@ -11,7 +11,7 @@ from Crypto.Hash import SHA
 from Crypto import Random
 from base64 import b64decode
 
-VERSION = '1.0'
+VERSION = '1.1'
 AUTHOR = "AneoPsy"
 
 
